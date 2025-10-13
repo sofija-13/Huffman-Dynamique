@@ -1,4 +1,4 @@
-from typing import TypeVar
+from typing import TypeVar, List
 T = TypeVar('T')
 
 class Node:
@@ -19,7 +19,7 @@ class Node:
 
     def isNode(self) -> bool:
         '''returns true if the given node is a node (ie : parent of (at least) another node OR parent of (AL) leaf)'''
-        return (self.left or self.right) # au moins un fils g ou d
+        return bool(self.left or self.right) # au moins un fils g ou d
     
     def isRoot(self) -> bool:
         '''returns true if the given node is the root of the tree'''
@@ -32,12 +32,14 @@ class Node:
             self.left = Node(value)
             self.left.parent = self
             return self.left
+        print(f"{value} non ajouté : {self.left} déjà présent")
 
     def newRight(self, value: T) -> "Node":
         if (self.right == None): # possible d'avoir deja un node right
             self.right = Node(value)
             self.right.parent = self
             return self.right
+        print(f"{value} non ajouté : {self.right} déjà présent")
 
 
 # =================== GETTERS ===================
@@ -130,6 +132,9 @@ class Node:
             # Si ce n'est pas la racine, on l'affiche quand même
             return "\n".join(_build_tree_lines(self, "", True))
         
+    def __repr__(self):
+        return (f"{self.value}")
+        
         
 # =================== PARCOURS ===================
     def getLeftNeighbor(self, high : int = 0, verbose :  bool = False) -> "Node":
@@ -180,12 +185,62 @@ class Node:
                 print(f"Descente -> {current.value}") if verbose else None
             return current
 
+
+    def GDBH(self, stop_on_weight_increase: bool = True, verbose: bool = False) -> List["Node"]:
+        """Parcours GDBH depuis le noeud actuel jusqu'à la racine."""
+        parcours: List[Node] = [self]
+        go_left: bool = True  # True = chercher voisin gauche, False = chercher voisin droit
+        current: Node = self
         
-
-    def GDBH(self)-> list["Node"]:
-        '''renvoie le parcours GDBH jusqu'à la racine du node concerné'''
-        pass
-
-
+        if verbose:
+            print(f"Début parcours GDBH depuis {self.value} (w:{self.weight})")
+        
+        while not current.isRoot():
+            # Chercher le voisin dans la direction courante
+            voisin: Node = current.getLeftNeighbor(verbose=verbose) if go_left else current.getRightNeighbor(verbose=verbose)
+            
+            if voisin is None:
+                # Pas de voisin dans cette direction : monter au parent et changer de direction
+                if verbose:
+                    print(f"→ Pas de voisin {'gauche' if go_left else 'droit'}, on monte au parent")
+                go_left = not go_left
+                current = current.parent
+                parcours.append(current)
+                if verbose:
+                    print(f"→ Parent: {current.value} (w:{current.weight})")
+                
+                # Vérifier la condition d'arrêt sur le poids
+                if stop_on_weight_increase and len(parcours) >= 2:
+                    if current.weight > parcours[-2].weight:
+                        if verbose:
+                            print(f"→ ARRÊT: poids augmente ({parcours[-2].weight} < {current.weight})")
+                        break
+            else:
+                # Voisin trouvé : on se déplace vers lui
+                current = voisin
+                parcours.append(current)
+                if verbose:
+                    print(f"→ Voisin {'gauche' if go_left else 'droit'}: {current.value} (w:{current.weight})")
+                
+                # Vérifier la condition d'arrêt sur le poids
+                if stop_on_weight_increase and len(parcours) >= 2:
+                    if current.weight > parcours[-2].weight:
+                        if verbose:
+                            print(f"→ ARRÊT: poids augmente ({parcours[-2].weight} < {current.weight})")
+                        break
+        
+        if verbose:
+            print(f"Fin parcours: {[n.value for n in parcours]}")
+        
+        return parcours
+    
+    def cheminRacine(self) -> List["Node"]:
+        res : List[Node] = [self]
+        current : Node = self
+        while (not(current.isRoot())):
+            current = current.parent
+            res.append(current)
+        return res
+    
 if __name__=="__main__":
     print("Node")
