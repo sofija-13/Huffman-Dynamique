@@ -39,6 +39,7 @@ def createTree(root : "Node", length : int) -> Node:
 
 # =================== GESTION FICHIERS BINAIRES ===================
 def lecture(file : str) -> str:
+    """lit un fichier utf-8 et renvoie une string binaire"""
     with open(file, 'rb') as f:
         contenu = f.read()
 
@@ -92,3 +93,11 @@ def decodeBin(bin : str) -> str:
     byte_length = (len(bin) + 7) // 8
     bin_bytes = int(bin, 2).to_bytes(byte_length, byteorder='big')
     return bin_bytes.decode()
+
+def lectureBin(file : str):
+    pass
+
+def writeBin(bin : bytes, file : str):
+    with open(file, 'wb') as f:
+        f.write(bin)
+
