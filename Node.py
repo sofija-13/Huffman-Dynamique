@@ -137,7 +137,7 @@ class Node:
         
         
 # =================== PARCOURS ===================
-    def getLeftNeighbor(self, high : int = 0, verbose :  bool = False) -> "Node":
+    def getLeftNeighbor(self, high : int = 0, verbose : bool = False) -> "Node":
         """retourne le noeud à gauche sur la même ligne"""
         print(f"Exploration node {self.value} (high={high})\n") if verbose else None
         if self.isRoot():
@@ -161,7 +161,7 @@ class Node:
                 print(f"Descente -> {current.value}") if verbose else None
             return current
         
-    def getRightNeighbor(self, high : int = 0, verbose :  bool = False) -> "Node":
+    def getRightNeighbor(self, high : int = 0, verbose : bool = False) -> "Node":
         """retourne le noeud à droite sur la même ligne"""
         print(f"Exploration node {self.value} (high={high})\n") if verbose else None
         if self.isRoot():
