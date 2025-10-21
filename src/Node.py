@@ -242,5 +242,20 @@ class Node:
             res.append(current)
         return res
     
+    def finBloc(self, m : Node) -> Node: 
+        """ renvoie le dernier node du bloc de m dans le chemin à la racine. 
+            = le dernier node qui a le même poids que m. """
+        chRacine : List["Node"] = m.cheminRacine()
+        p : Node = m
+        for node in chRacine :
+            if node.weight == m.weight :
+                p = node
+            else :
+                break
+        if p == m :
+            return None
+        return p
+
+    
 if __name__=="__main__":
     print("Node")

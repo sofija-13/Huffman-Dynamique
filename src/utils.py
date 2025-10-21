@@ -1,5 +1,6 @@
-import Node
+import src.Node as Node
 from typing import List
+from bitarray import bitarray
 
 def swapNodes(nodeA : Node, nodeB : Node, verbose : bool = False) -> None:
     if verbose :
@@ -38,50 +39,71 @@ def createTree(root : "Node", length : int) -> Node:
 
 
 # =================== GESTION FICHIERS BINAIRES ===================
-def lecture(file : str) -> str:
-    """lit un fichier utf-8 et renvoie une string binaire"""
+def lecture(file : str) -> bitarray:
+    """Lit un fichier et renvoie un bitarray"""
+    bits = bitarray()
     with open(file, 'rb') as f:
-        contenu = f.read()
-
-    bits = ''.join(format(byte, '08b') for byte in contenu)
+        bits.fromfile(f)
+    
     return bits
 
-def cutBin(bin : str) -> List[str]:
-    """cut une chaine binaire utf8 en plusieurs lettres binaires"""
+def cutBin(bin : bitarray) -> List[bitarray]:
+    """Découpe un bitarray UTF-8 en plusieurs caractères (bitarrays individuels).
+    Si des bits restants ne forment pas un octet complet, ils sont complétés avec des 0."""
     result = []
     i = 0
     
     while i < len(bin):
         # Vérifier le premier octet pour déterminer le nombre d'octets du caractère
         if i + 8 > len(bin):
-            break  # Pas assez de bits restants
+            # Pas assez de bits pour un octet complet -> compléter avec des 0
+            remaining = bin[i:]
+            padding_needed = 8 - len(remaining)
+            padded = remaining + bitarray('0' * padding_needed)
+            result.append(padded)
+            break
         
         first_byte = bin[i:i+8]
         
         # ASCII > code 1 octet (premier bit à 0)
-        if first_byte[0] == '0':
+        if not first_byte[0]:  # bit à 0
             result.append(bin[i:i+8])
             i += 8
         # 2 premiers bits à 1 > code sur 2 octets 
-        elif first_byte[:3] == '110':
+        elif first_byte[0] and first_byte[1] and not first_byte[2]:  # pattern 110
             if i + 16 <= len(bin):
                 result.append(bin[i:i+16])
                 i += 16
             else:
+                # Pas assez de bits pour 2 octets -> compléter avec des 0
+                remaining = bin[i:]
+                padding_needed = 16 - len(remaining)
+                padded = remaining + bitarray('0' * padding_needed)
+                result.append(padded)
                 break
         # 3 premiers bits à 1 > code sur 3 octets
-        elif first_byte[:4] == '1110':
+        elif first_byte[0] and first_byte[1] and first_byte[2] and not first_byte[3]:  # pattern 1110
             if i + 24 <= len(bin):
                 result.append(bin[i:i+24])
                 i += 24
             else:
+                # Pas assez de bits pour 3 octets -> compléter avec des 0
+                remaining = bin[i:]
+                padding_needed = 24 - len(remaining)
+                padded = remaining + bitarray('0' * padding_needed)
+                result.append(padded)
                 break
         # 4 premiers bits à 1 > code sur 4 octets
-        elif first_byte[:5] == '11110':
+        elif first_byte[0] and first_byte[1] and first_byte[2] and first_byte[3] and not first_byte[4]:  # pattern 11110
             if i + 32 <= len(bin):
                 result.append(bin[i:i+32])
                 i += 32
             else:
+                # Pas assez de bits pour 4 octets -> compléter avec des 0
+                remaining = bin[i:]
+                padding_needed = 32 - len(remaining)
+                padded = remaining + bitarray('0' * padding_needed)
+                result.append(padded)
                 break
         else:
             # cas de caractères sur plus de 4 octets : on ne les gère pas
@@ -89,15 +111,16 @@ def cutBin(bin : str) -> List[str]:
     
     return result
 
-def decodeBin(bin : str) -> str:
-    byte_length = (len(bin) + 7) // 8
-    bin_bytes = int(bin, 2).to_bytes(byte_length, byteorder='big')
-    return bin_bytes.decode()
+def decodeBin(bin : bitarray) -> str:
+    """Décode un bitarray en string UTF-8"""
+    return bin.tobytes().decode('utf-8')
 
-def lectureBin(file : str):
-    pass
+def toBin(bin : bitarray) -> bytes:
+    """Convertit un bitarray en bytes"""
+    return bin.tobytes()
 
-def writeBin(bin : bytes, file : str):
+def writeBin(bin : bitarray, file : str):
+    """Écrit un bitarray dans un fichier binaire"""
     with open(file, 'wb') as f:
-        f.write(bin)
+        bin.tofile(f)
 
