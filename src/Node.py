@@ -1,13 +1,13 @@
-from typing import TypeVar, List
+from typing import TypeVar, List, Dict
 T = TypeVar('T')
 
 class Node:
-    def __init__(self, value: T):
+    def __init__(self, value: T, weight : int = 1):
         '''
         initial constructor
         '''
         self.value : T = value
-        self.weight : int = 1
+        self.weight : int = weight
         self.left : Node = None
         self.right : Node = None
         self.parent : Node = None
@@ -137,29 +137,29 @@ class Node:
         
         
 # =================== PARCOURS ===================
-    def getLeftNeighbor(self, high : int = 0, verbose : bool = False) -> "Node":
-        """retourne le noeud à gauche sur la même ligne"""
-        print(f"Exploration node {self.value} (high={high})\n") if verbose else None
-        if self.isRoot():
-            return None
-        if (self.parent.isRoot()) and (self.parent.left==self): # on cherche un voisin gauche alors qu'on est le + à gauche
-            print(f"node {self.value} est le fils gauche du root") if verbose else None
-            return None
-        if (self == self.parent.left):
-            print("On monte dans l'arbre") if verbose else None
-            high += 1
-            return self.parent.getLeftNeighbor(high, verbose)
-        else :
-            print(f"On va au fils gauche du parent puis on redescend {high} fois à droite") if verbose else None
-            current : Node = self.parent.left
-            # Descendre à droite autant de fois que nécessaire (high fois)
-            for _ in range(high):
-                if current.right is None:
-                    print(f"Impossible de descendre plus") if verbose else None
-                    return None
-                current = current.right
-                print(f"Descente -> {current.value}") if verbose else None
-            return current
+    # def getLeftNeighbor(self, high : int = 0, verbose : bool = False) -> "Node":
+    #     """retourne le noeud à gauche sur la même ligne"""
+    #     print(f"Exploration node {self.value} (high={high})\n") if verbose else None
+    #     if self.isRoot():
+    #         return None
+    #     if (self.parent.isRoot()) and (self.parent.left==self): # on cherche un voisin gauche alors qu'on est le + à gauche
+    #         print(f"node {self.value} est le fils gauche du root") if verbose else None
+    #         return None
+    #     if (self == self.parent.left):
+    #         print("On monte dans l'arbre") if verbose else None
+    #         high += 1
+    #         return self.parent.getLeftNeighbor(high, verbose)
+    #     else :
+    #         print(f"On va au fils gauche du parent puis on redescend {high} fois à droite") if verbose else None
+    #         current : Node = self.parent.left
+    #         # Descendre à droite autant de fois que nécessaire (high fois)
+    #         for _ in range(high):
+    #             if current.right is None:
+    #                 print(f"Impossible de descendre plus") if verbose else None
+    #                 return None
+    #             current = current.right
+    #             print(f"Descente -> {current.value}") if verbose else None
+    #         return current
         
     def getRightNeighbor(self, high : int = 0, verbose : bool = False) -> "Node":
         """retourne le noeud à droite sur la même ligne"""
@@ -186,53 +186,44 @@ class Node:
             return current
 
 
-    def GDBH(self, stop_on_weight_increase: bool = True, verbose: bool = False) -> List["Node"]:
-        """Parcours GDBH depuis le noeud actuel jusqu'à la racine."""
-        parcours: List[Node] = [self]
-        go_left: bool = True  # True = chercher voisin gauche, False = chercher voisin droit
-        current: Node = self
-        
+    def GDBH(self, root : Node, verbose : bool = False) -> List[Node]:
+        """Renvoie le parcours GDBH (Gauche-Droite-Bas-Haut) depuis le node actuel
+        Args:
+            root (Node): La racine de l'arbre complet
+            verbose (bool, optional): Verbose. Defaults to False.
+        Returns:
+            List[Node]: Le parcours GDBH sous forme de liste
+        """
         if verbose:
             print(f"Début parcours GDBH depuis {self.value} (w:{self.weight})")
         
-        while not current.isRoot():
-            # Chercher le voisin dans la direction courante
-            voisin: Node = current.getLeftNeighbor(verbose=verbose) if go_left else current.getRightNeighbor(verbose=verbose)
+        levels : Dict[int, List[Node]] = {}
+
+        def getLevels(node : Node, depth : int):
+            #Renvoie la liste des nodes du niveau de self jusqu'à la racine de la G vers la D
+            if node is None:
+                return 
             
-            if voisin is None:
-                # Pas de voisin dans cette direction : monter au parent et changer de direction
-                if verbose:
-                    print(f"→ Pas de voisin {'gauche' if go_left else 'droit'}, on monte au parent")
-                go_left = not go_left
-                current = current.parent
-                parcours.append(current)
-                if verbose:
-                    print(f"→ Parent: {current.value} (w:{current.weight})")
+            if depth not in levels:
+                levels[depth] = [node]
+            else :
+                levels[depth].append(node)
                 
-                # Vérifier la condition d'arrêt sur le poids
-                if stop_on_weight_increase and len(parcours) >= 2:
-                    if current.weight > parcours[-2].weight:
-                        if verbose:
-                            print(f"→ ARRÊT: poids augmente ({parcours[-2].weight} < {current.weight})")
-                        break
-            else:
-                # Voisin trouvé : on se déplace vers lui
-                current = voisin
-                parcours.append(current)
-                if verbose:
-                    print(f"→ Voisin {'gauche' if go_left else 'droit'}: {current.value} (w:{current.weight})")
-                
-                # Vérifier la condition d'arrêt sur le poids
-                if stop_on_weight_increase and len(parcours) >= 2:
-                    if current.weight > parcours[-2].weight:
-                        if verbose:
-                            print(f"→ ARRÊT: poids augmente ({parcours[-2].weight} < {current.weight})")
-                        break
-        
-        if verbose:
-            print(f"Fin parcours: {[n.value for n in parcours]}")
-        
-        return parcours
+            if depth > 0:
+                getLevels(node.left, depth-1)
+                getLevels(node.right, depth-1)
+            
+        getLevels(root, self.distFromRoot()) #keys de 0 = lvl de self à la racine (key max du dict)
+
+        res : List[Node] = []
+        for depth in sorted(levels.keys()): 
+            res.extend(levels[depth])
+
+        id_self : int = res.index(self)
+        print(f"Parcours obtenu : {res[id_self:]}") if verbose else None
+        return res[id_self:]
+    
+    
     
     def cheminRacine(self) -> List["Node"]:
         res : List[Node] = [self]

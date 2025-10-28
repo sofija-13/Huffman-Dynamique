@@ -1,14 +1,15 @@
-import src.Node as Node
+from .Node import Node
 from typing import List
 from bitarray import bitarray
 
 def swapNodes(nodeA : Node, nodeB : Node, verbose : bool = False) -> None:
     if verbose :
-        print(("="*20)+" Swapping: "+ ("="*20) + "\n"
-            + str(nodeA) +
-            "\n\n\t<->\n\n" 
-            + str(nodeB) + "\n" 
-            + ("="*50) + "\n")
+        # print(("="*20)+" Swapping: "+ ("="*20) + "\n"
+        #     + str(nodeA) +
+        #     "\n\n\t<->\n\n" 
+        #     + str(nodeB) + "\n" 
+        #     + ("="*50) + "\n")
+        print(f"-- Swap entre {nodeA.value}:{nodeA.weight} et {nodeB.value}:{nodeB.weight}")
         
     # swap values and weights
     nodeA.value, nodeB.value = nodeB.value, nodeA.value
