@@ -186,7 +186,7 @@ class Node:
             return current
 
 
-    def GDBH(self, root : Node, verbose : bool = False) -> List[Node]:
+    def GDBH(self, root : "Node", verbose : bool = False) -> List["Node"]:
         """Renvoie le parcours GDBH (Gauche-Droite-Bas-Haut) depuis le node actuel
         Args:
             root (Node): La racine de l'arbre complet
@@ -233,7 +233,7 @@ class Node:
             res.append(current)
         return res
     
-    def finBloc(self, m : Node) -> Node: 
+    def finBloc(self, m : "Node") -> "Node": 
         """ renvoie le dernier node du bloc de m dans le chemin à la racine. 
             = le dernier node qui a le même poids que m. """
         chRacine : List["Node"] = m.cheminRacine()

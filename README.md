@@ -11,3 +11,5 @@ TO DO:
 - Rapport (au format pdf, d’une dizaine de pages)
 - Code Source (avec vos jeux de données test)
 - Transparents de présentation
+
+il faut installer bitarray
