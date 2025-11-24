@@ -10,11 +10,6 @@ def swapNodes(nodeA : Node, nodeB : Node, verbose : bool = False) -> None:
         verbose (bool, optional): _Verbose_. Defaults to False.\\
     """
     if verbose :
-        # print(("="*20)+" Swapping: "+ ("="*20) + "\n"
-        #     + str(nodeA) +
-        #     "\n\n\t<->\n\n" 
-        #     + str(nodeB) + "\n" 
-        #     + ("="*50) + "\n")
         print(f"-- Swap entre {nodeA.value}:{nodeA.weight} et {nodeB.value}:{nodeB.weight}")
         
     # swap values and weights
@@ -129,18 +124,21 @@ def encode(text : str, verbose : bool = False)->bitarray:
     Returns:
         bitarray: le texte compressé en format bitarray\\
     """
-    
+    ### NE MARCHE SEULEMENT POUR DE L4ASCII POUR LE MOMENT
     # Arbre vide au départ
     NYT : Node = Node("#", weight=0)
     root : Node = NYT #pointeur sur le haut de l'arbre à chaque fois
     # Résultat
-    # res : bitarray = bitarray()
-    res : str = ""
+    res : bitarray = bitarray()
+    # res : str = ""
     for lettre in text :
         search : Node = root.searchNode(lettre, verbose=verbose)
         
         if search : #cas où la lettre lue est déjà dans l'arbre
             print(f"Lettre {lettre} trouvée") if verbose else None
+            code : bitarray = root.getCode(lettre)
+            res += code
+            # print(f"\tres {res}")
             search.weight += 1
             update : Node = search
             print(f"Update de {lettre}") if verbose else None
@@ -148,6 +146,11 @@ def encode(text : str, verbose : bool = False)->bitarray:
             
         else : #cas où la lettre lue n'est pas encore dans l'arbre 
             print(f"Lettre {lettre} non trouvée") if verbose else None
+            code : bitarray = root.getCode("#")
+            res = res + code
+            res.frombytes(lettre.encode('utf-8')) #ajout de la lettre aux bits
+            del res[len(res)-8]
+            print(f"\tres {res}")
             NYT = newNode(NYT, lettre) # insertion de la nouvelle lettre
             update : Node = NYT
             print(f"Ajout de {lettre}") if verbose else None
@@ -156,20 +159,21 @@ def encode(text : str, verbose : bool = False)->bitarray:
         updateWeights(update)
         print(f"Update des poids") if verbose else None
         print(root) if verbose else None
-        res = 1
-        while (res==1): #swap des nodes qui fail le gdbh tant qu'il y en a 
-            res = updateSwap(update, root, verbose)
+        cond = 1
+        while (cond==1): #swap des nodes qui fail le gdbh tant qu'il y en a 
+            cond = updateSwap(update, root, verbose)
         # updateWeights(update)
         print(f"--Rendu final près ajout de {lettre} :") if verbose else None
         print(root) if verbose else None
         print("\n"+"="*20) if verbose else None
             
     print(root)  
+    return res
 
 
 # =================== GESTION FICHIERS BINAIRES ===================
 def lecture(file : str) -> bitarray:
-    """Lit un fichier et renvoie un bitarray"""
+    """Lit un fichier UTF-8 et renvoie un bitarray"""
     bits = bitarray()
     with open(file, 'rb') as f:
         bits.fromfile(f)

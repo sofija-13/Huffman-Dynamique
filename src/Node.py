@@ -1,4 +1,5 @@
 from typing import TypeVar, List, Dict, Optional
+from bitarray import bitarray
 T = TypeVar('T')
 
 class Node:
@@ -77,29 +78,28 @@ class Node:
         return right
     
     # def getCode(self, value : T, verbose : bool = False) -> bitarray:
-    def getCode(self, value : T, verbose : bool = False) -> Optional[str]:
+    def getCode(self, value : T) -> Optional[str]:
         """_Renvoie le code du parcours correspondant à une valeur_
         Args:
             value (T): _Valeur dont on souhaite obtenir le code_
-            verbose (bool, optional): _Verbose_. Defaults to False.
         Returns:
-            int: _Si valeur présente dans l'arbre, le code lui correspondant._\\
+            bitarray: _Si valeur présente dans l'arbre, le code lui correspondant._\\
         """
 
         if self.isLeaf():
             if self.value == value:
-                return ""
+                return bitarray()
             return None
 
         if self.left:
-            res = self.left.getCode(value, verbose)
+            res = self.left.getCode(value)
             if res is not None:
-                return "0" + res
+                return bitarray('0') + res
 
         if self.right:
-            res = self.right.getCode(value, verbose)
+            res = self.right.getCode(value)
             if res is not None:
-                return "1" + res
+                return bitarray('1') + res
 
         return None
              

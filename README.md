@@ -29,3 +29,10 @@ TO DO:
 - Rapport (au format pdf, d’une dizaine de pages)
 - Code Source (avec vos jeux de données test)
 - Transparents de présentation
+
+---
+### Tips : print un fichier en format binaire 
+```bash
+python3 -c "from bitarray import bitarray; ba = bitarray(); ba.fromfile(open('FILEPATH DU BINAIRE', 'rb')); print(ba.to01())"
+```
+##### Prérequis : bitarray installé
