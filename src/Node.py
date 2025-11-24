@@ -1,4 +1,4 @@
-from typing import TypeVar, List, Dict
+from typing import TypeVar, List, Dict, Optional
 T = TypeVar('T')
 
 class Node:
@@ -53,9 +53,16 @@ class Node:
     
 
 # =================== UTILS ===================
-    def searchNode(self, value : T, searchAll : bool = False, verbose : bool = False) -> "Node" :
-        """Cherche une valeur dans l'arbre. Renvoie le node ou None si non présent"""
-        
+    def searchNode(self, value : T, searchAll : bool = False, verbose : bool = False) -> Node :
+        """_Cherche une valeur dans l'arbre_
+        Args:
+            value (T): _La valeur à chercher dans l'arbre_
+            searchAll (bool, optional): _True si recherche aussi des nodes internes (sinon recherche dans les feuilles seulement)_. Defaults to False.
+            verbose (bool, optional): _Verbose_. Defaults to False.
+
+        Returns:
+            Node: _Le node trouvé ou None si non présent_
+        """
         if (self.isLeaf() or searchAll):
             if (self.value == value) :
                 if verbose:
@@ -69,10 +76,41 @@ class Node:
             return left
         return right
     
+    # def getCode(self, value : T, verbose : bool = False) -> bitarray:
+    def getCode(self, value : T, verbose : bool = False) -> Optional[str]:
+        """_Renvoie le code du parcours correspondant à une valeur_
+        Args:
+            value (T): _Valeur dont on souhaite obtenir le code_
+            verbose (bool, optional): _Verbose_. Defaults to False.
+        Returns:
+            int: _Si valeur présente dans l'arbre, le code lui correspondant._\\
+        """
+
+        if self.isLeaf():
+            if self.value == value:
+                return ""
+            return None
+
+        if self.left:
+            res = self.left.getCode(value, verbose)
+            if res is not None:
+                return "0" + res
+
+        if self.right:
+            res = self.right.getCode(value, verbose)
+            if res is not None:
+                return "1" + res
+
+        return None
+             
+    
     
 # =================== MISCS ===================
     def length(self) -> int:
-        '''returns length from the given tree (node to bttm)'''
+        """_Longueur entre le node et la feuille la plus basse_
+        Returns:
+            int: _La longueur_\\
+        """
         if self.isLeaf():
             return 1
         lenLeft = self.left.length() if self.left else 0 # cas d'appel sur un node None => pas de méthode length
@@ -80,13 +118,14 @@ class Node:
         return max(lenLeft, lenRight) +1
     
     def distFromRoot(self) -> int:
+        """_Renvoie la distance à la racine du node_\\"""
         if self.isRoot():
             return 0
         return self.parent.distFromRoot() +1
 
 
     def __str__(self):
-        '''Affichage joli de l'arbre avec des lignes ASCII'''
+        """_Affichage joli de l'arbre avec des lignes ASCII_"""
         def _build_tree_lines(node, prefix="", is_tail=True):
             """Construit les lignes d'affichage de l'arbre récursivement"""
             if node is None:
@@ -136,33 +175,9 @@ class Node:
         return (f"{self.value}")
         
         
-# =================== PARCOURS ===================
-    # def getLeftNeighbor(self, high : int = 0, verbose : bool = False) -> "Node":
-    #     """retourne le noeud à gauche sur la même ligne"""
-    #     print(f"Exploration node {self.value} (high={high})\n") if verbose else None
-    #     if self.isRoot():
-    #         return None
-    #     if (self.parent.isRoot()) and (self.parent.left==self): # on cherche un voisin gauche alors qu'on est le + à gauche
-    #         print(f"node {self.value} est le fils gauche du root") if verbose else None
-    #         return None
-    #     if (self == self.parent.left):
-    #         print("On monte dans l'arbre") if verbose else None
-    #         high += 1
-    #         return self.parent.getLeftNeighbor(high, verbose)
-    #     else :
-    #         print(f"On va au fils gauche du parent puis on redescend {high} fois à droite") if verbose else None
-    #         current : Node = self.parent.left
-    #         # Descendre à droite autant de fois que nécessaire (high fois)
-    #         for _ in range(high):
-    #             if current.right is None:
-    #                 print(f"Impossible de descendre plus") if verbose else None
-    #                 return None
-    #             current = current.right
-    #             print(f"Descente -> {current.value}") if verbose else None
-    #         return current
-        
+# =================== PARCOURS =================== 
     def getRightNeighbor(self, high : int = 0, verbose : bool = False) -> "Node":
-        """retourne le noeud à droite sur la même ligne"""
+        """_Retourne le noeud à droite sur la même ligne_"""
         print(f"Exploration node {self.value} (high={high})\n") if verbose else None
         if self.isRoot():
             return None
@@ -192,7 +207,7 @@ class Node:
             root (Node): La racine de l'arbre complet
             verbose (bool, optional): Verbose. Defaults to False.
         Returns:
-            List[Node]: Le parcours GDBH sous forme de liste
+            List[Node]: Le parcours GDBH sous forme de liste\\
         """
         if verbose:
             print(f"Début parcours GDBH depuis {self.value} (w:{self.weight})")
@@ -222,10 +237,13 @@ class Node:
         id_self : int = res.index(self)
         print(f"Parcours obtenu : {res[id_self:]}") if verbose else None
         return res[id_self:]
+
     
-    
-    
-    def cheminRacine(self) -> List["Node"]:
+    def cheminRacine(self) -> List[Node]:
+        """_Renvoie le chemin du node actuel jusqu'à la racine_
+        Returns:
+            List[Node]: _La liste des node du node actuel jusqu'à la racine_
+        """
         res : List[Node] = [self]
         current : Node = self
         while (not(current.isRoot())):
@@ -233,9 +251,10 @@ class Node:
             res.append(current)
         return res
     
+    
     def finBloc(self, m : "Node") -> "Node": 
-        """ renvoie le dernier node du bloc de m dans le chemin à la racine. 
-            = le dernier node qui a le même poids que m. """
+        """_Renvoie le dernier node du bloc de m dans le chemin à la racine. 
+            = le dernier node qui a le même poids que m._"""
         chRacine : List["Node"] = m.cheminRacine()
         p : Node = m
         for node in chRacine :
@@ -247,6 +266,8 @@ class Node:
             return None
         return p
 
+
+# =============================================== #
     
 if __name__=="__main__":
     print("Node")

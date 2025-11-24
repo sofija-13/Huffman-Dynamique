@@ -1,7 +1,25 @@
-# Huffman-Dynamique
-Projet pour l'UE d'algorithmique avancée ALGAV du M1 informatique de Sorbonne Université
+#### UM4IN500
+# Projet Huffman Dynamique
+Projet d'Algorithmique Avancée (ALGAV) du M1 Informatique de Sorbonne Université
 
-Lien pour éditer le rapport: https://www.overleaf.com/7683873468ggjjjbbtmqwg#1bff2f 
+Langage utilisé : **Python 3** - Version 1.14, dernière version  (Octobre 2025)
+
+---
+### Installation
+#### Création d'un venv Python
+```bash
+python -m venv env
+source env/bin/activate 
+```
+#### Installation du module *bitarray*
+```bash
+pip3 install bitarray
+```
+---
+
+[Lien Rapport Overleaf](https://www.overleaf.com/7683873468ggjjjbbtmqwg#1bff2f) (actuellement en modification)
+
+---
 
 TO DO:
 
@@ -11,5 +29,3 @@ TO DO:
 - Rapport (au format pdf, d’une dizaine de pages)
 - Code Source (avec vos jeux de données test)
 - Transparents de présentation
-
-il faut installer bitarray
