@@ -1,4 +1,4 @@
-from typing import TypeVar, List, Dict, Optional
+from typing import TypeVar, List, Dict, Optional, Set
 from bitarray import bitarray
 T = TypeVar('T')
 
@@ -25,7 +25,6 @@ class Node:
     def isRoot(self) -> bool:
         '''returns true if the given node is the root of the tree'''
         return not(self.parent) # self.parent == none : pas de parent => racine de l'arbre
-    
 
 # =================== CHILDS CTORS ===================
     def newLeft(self, value: T) -> "Node":
@@ -40,18 +39,7 @@ class Node:
             self.right = Node(value)
             self.right.parent = self
             return self.right
-        print(f"{value} non ajouté : {self.right} déjà présent")
-
-
-# =================== GETTERS ===================
-    def getValue(self) -> T:
-        """retourne la value du noeud actuel"""
-        return self.value
-    
-    def getWeight(self) -> int:
-        """retourne le weight du noeud actuel"""
-        return self.weight
-    
+        print(f"{value} non ajouté : {self.right} déjà présent")    
 
 # =================== UTILS ===================
     def searchNode(self, value : T, searchAll : bool = False, verbose : bool = False) -> Node :
@@ -76,34 +64,7 @@ class Node:
         if left :
             return left
         return right
-    
-    # def getCode(self, value : T, verbose : bool = False) -> bitarray:
-    def getCode(self, value : T) -> Optional[str]:
-        """_Renvoie le code du parcours correspondant à une valeur_
-        Args:
-            value (T): _Valeur dont on souhaite obtenir le code_
-        Returns:
-            bitarray: _Si valeur présente dans l'arbre, le code lui correspondant._\\
-        """
-
-        if self.isLeaf():
-            if self.value == value:
-                return bitarray()
-            return None
-
-        if self.left:
-            res = self.left.getCode(value)
-            if res is not None:
-                return bitarray('0') + res
-
-        if self.right:
-            res = self.right.getCode(value)
-            if res is not None:
-                return bitarray('1') + res
-
-        return None
-             
-    
+      
     
 # =================== MISCS ===================
     def length(self) -> int:

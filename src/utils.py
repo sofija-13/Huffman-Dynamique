@@ -27,6 +27,14 @@ def swapNodes(nodeA : Node, nodeB : Node, verbose : bool = False) -> None:
         nodeB.left.parent = nodeB
     if nodeB.right:
         nodeB.right.parent = nodeB
+        
+        
+def getEnfants(node : Node)->Set[Node]:
+    """_Getter des enfants d'un node_
+    Returns:
+        Set[Node]: _Un set contenant les enfants du node_
+    """
+    return {node.gauche, node.right}
 
 
 def createTree(root : "Node", length : int) -> Node:
@@ -38,10 +46,10 @@ def createTree(root : "Node", length : int) -> Node:
         Node: _La racine de l'arbre_\\
     """
     if length >0 :
-        left = root.newLeft(2*root.getValue()+1)
+        left = root.newLeft(2*root.value+1)
         createTree(left, length-1)
 
-        right = root.newRight(2*root.getValue()+2)
+        right = root.newRight(2*root.value+2)
         createTree(right, length-1)
     return root
 
@@ -64,6 +72,7 @@ def updateWeights(node : Node, verbose : bool = False) -> None:
         current = current.parent
     return
 
+
 T = TypeVar('T')
 def newNode(NYT : Node, value : T) -> Node:
     """Insère une nouvelle valeur dans l'arbre de Huffman à partir de son NYT
@@ -83,6 +92,33 @@ def newNode(NYT : Node, value : T) -> Node:
     oldNYT.right.parent = oldNYT
     
     return oldNYT.left 
+
+def getCode(root : Node, value : T, verbose : bool = False) -> bitarray:
+    # def getCode(self, value : T) -> Optional[str]:
+        """_Renvoie le code du parcours correspondant à une valeur_
+        Args:
+            root (Node): _Racine de l'arbre contenant la valeur_
+            value (T): _Valeur dont on souhaite obtenir le code_
+        Returns:
+            bitarray: _Si valeur présente dans l'arbre, le code lui correspondant._\\
+        """
+
+        if root.isLeaf():
+            if root.value == value:
+                return bitarray()
+            return None
+
+        if root.left:
+            res = getCode(root.left, value)
+            if res is not None:
+                return bitarray('0') + res
+
+        if root.right:
+            res = getCode(root.right, value)
+            if res is not None:
+                return bitarray('1') + res
+
+        return None
 
 def updateSwap(node : Node, root : Node, verbose : bool = False)->int:
     """Met à jour la forme de l'arbre pour respecter le principe d'arbre de Huffman (p(w1)<=p(w2) dans l'ordre GDBH)
@@ -124,7 +160,6 @@ def encode(text : str, verbose : bool = False)->bitarray:
     Returns:
         bitarray: le texte compressé en format bitarray\\
     """
-    ### NE MARCHE SEULEMENT POUR DE L4ASCII POUR LE MOMENT
     # Arbre vide au départ
     NYT : Node = Node("#", weight=0)
     root : Node = NYT #pointeur sur le haut de l'arbre à chaque fois
@@ -136,7 +171,7 @@ def encode(text : str, verbose : bool = False)->bitarray:
         
         if search : #cas où la lettre lue est déjà dans l'arbre
             print(f"Lettre {lettre} trouvée") if verbose else None
-            code : bitarray = root.getCode(lettre)
+            code : bitarray = getCode(root, lettre)
             res += code
             # print(f"\tres {res}")
             search.weight += 1
@@ -146,11 +181,11 @@ def encode(text : str, verbose : bool = False)->bitarray:
             
         else : #cas où la lettre lue n'est pas encore dans l'arbre 
             print(f"Lettre {lettre} non trouvée") if verbose else None
-            code : bitarray = root.getCode("#")
+            code : bitarray = getCode(root, "#")
             res = res + code
             res.frombytes(lettre.encode('utf-8')) #ajout de la lettre aux bits
-            del res[len(res)-8]
-            print(f"\tres {res}")
+            # del res[len(res)-8]
+            # print(f"\tres {res}")
             NYT = newNode(NYT, lettre) # insertion de la nouvelle lettre
             update : Node = NYT
             print(f"Ajout de {lettre}") if verbose else None
@@ -173,7 +208,7 @@ def encode(text : str, verbose : bool = False)->bitarray:
 
 # =================== GESTION FICHIERS BINAIRES ===================
 def lecture(file : str) -> bitarray:
-    """Lit un fichier UTF-8 et renvoie un bitarray"""
+    """Lit un fichier binaire et renvoie un bitarray"""
     bits = bitarray()
     with open(file, 'rb') as f:
         bits.fromfile(f)
