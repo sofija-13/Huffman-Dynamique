@@ -1,5 +1,5 @@
 from .Node import Node
-from typing import List, TypeVar
+from typing import List, TypeVar, Set
 from bitarray import bitarray
 
 def swapNodes(nodeA : Node, nodeB : Node, verbose : bool = False) -> None:
@@ -291,4 +291,14 @@ def writeBin(bin : bitarray, file : str):
     """Écrit un bitarray dans un fichier binaire"""
     with open(file, 'wb') as f:
         bin.tofile(f)
-        
+
+def ecriture(fichier_chaine : str, fichier : str) -> str:
+    """Encode le texte fichier_chaine 
+    sous forme de fichier binaire"""
+    bin = lecture(fichier_chaine)
+    with open('fichier.txt', 'r', encoding='utf-8') as f:
+        text = f.read()
+        bin.frombytes(text.encode('utf-8'))
+        bin.tofile(f)    
+    
+    return fichier
