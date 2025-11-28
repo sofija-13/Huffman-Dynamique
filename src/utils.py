@@ -152,6 +152,14 @@ def updateSwap(node : Node, root : Node, verbose : bool = False)->int:
     print("pas de swap") if verbose else None
     return 0
 
+def avance(node : Node, bit : int)-> Node:
+    if (node == None):
+        return None
+    elif (bit == 1): # 1
+        return node.right
+    else:
+        return node.left
+
 def encode(text : str, verbose : bool = False)->bitarray:
     """_Compresse un texte de format UTF-8 par l'algorithme de Huffman Adaptatif_
     Args:
@@ -202,7 +210,7 @@ def encode(text : str, verbose : bool = False)->bitarray:
         print(root) if verbose else None
         print("\n"+"="*20) if verbose else None
             
-    print(root)  
+    # print(root)
     return res
 
 
