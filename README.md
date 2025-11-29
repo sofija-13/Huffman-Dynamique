@@ -8,8 +8,8 @@ Langage utilisé : **Python 3** - Version 1.14, dernière version  (Octobre 2025
 ### Installation
 #### Création d'un venv Python
 ```bash
-python -m venv env
-source env/bin/activate 
+python3 -m venv .venv
+source .venv/bin/activate 
 ```
 #### Installation du module *bitarray*
 ```bash
