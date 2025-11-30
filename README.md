@@ -27,7 +27,7 @@ TO DO:
 - Code Source (avec vos jeux de données test)
 - Transparents de présentation
 
-- Optimisations possibles : pointeur vers NYT, tab des éléments insérés, modifier encode pour finir en nb multiple de octets. 
+- Optimisations possibles : tab des éléments insérés
 
 ---
 ### Tips : print un fichier en format binaire 

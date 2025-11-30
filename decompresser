@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+print_usage() {
+  echo "Usage: decompresser <fichier_entree> <fichier_sortie>" 1>&2
+  echo "Exemple: decompresser texts/bintexts/pascal.huff texts/Blaise_Pascal/Blaise_Pascal.txt" 1>&2
+}
+
+if [[ ${1:-} == "-h" || ${1:-} == "--help" ]]; then
+  print_usage
+  exit 0
+fi
+
+if [[ $# -ne 2 ]]; then
+  echo "Erreur: nombre d'arguments invalide." 1>&2
+  print_usage
+  exit 1
+fi
+
+in_path="$1"
+out_path="$2"
+
+if [[ ! -f "$in_path" ]]; then
+  echo "Erreur: le fichier d'entrée n'existe pas: $in_path" 1>&2
+  exit 1
+fi
+
+# Résoudre le répertoire du script pour exécuter encode.py relativement
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Empêcher l'écrasement accidentel si entrée == sortie
+# (encode.py gère déjà ce cas, mais on double-vérifie ici)
+abspath() { perl -MCwd=realpath -e 'print realpath($ARGV[0])' "$1"; }
+set +e
+abs_in="$(abspath "$in_path" 2>/dev/null)"; rc_in=$?
+abs_out="$(abspath "$out_path" 2>/dev/null)"; rc_out=$?
+set -e
+if [[ $rc_in -eq 0 && $rc_out -eq 0 && "$abs_in" == "$abs_out" ]]; then
+  echo "⚠️ Les fichiers d'entrée et de sortie doivent être différents" 1>&2
+  exit 1
+fi
+
+# Exécuter l'encodeur
+PYTHON_BIN=${PYTHON_BIN:-python3}
+"$PYTHON_BIN" "$SCRIPT_DIR/decode.py" "$in_path" "$out_path"

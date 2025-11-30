@@ -27,14 +27,6 @@ def swapNodes(nodeA : Node, nodeB : Node, verbose : bool = False) -> None:
         nodeB.left.parent = nodeB
     if nodeB.right:
         nodeB.right.parent = nodeB
-        
-        
-def getEnfants(node : Node)->Set[Node]:
-    """_Getter des enfants d'un node_
-    Returns:
-        Set[Node]: _Un set contenant les enfants du node_
-    """
-    return {node.gauche, node.right}
 
 
 def createTree(root : "Node", length : int) -> Node:
@@ -85,7 +77,7 @@ def newNode(NYT : Node, value : T) -> Node:
     oldNYT : Node = NYT
     oldNYT.weight = 1
     oldNYT.value = None 
-    oldNYT.left = Node("#", weight=0)
+    oldNYT.left = Node("##", weight=0)
     oldNYT.right = Node(value)
     
     oldNYT.left.parent = oldNYT
@@ -94,7 +86,6 @@ def newNode(NYT : Node, value : T) -> Node:
     return oldNYT.left 
 
 def getCode(root : Node, value : T, verbose : bool = False) -> bitarray:
-    # def getCode(self, value : T) -> Optional[str]:
         """_Renvoie le code du parcours correspondant à une valeur_
         Args:
             root (Node): _Racine de l'arbre contenant la valeur_
@@ -148,7 +139,7 @@ def updateSwap(node : Node, root : Node, verbose : bool = False)->int:
             swapNodes(current, parcours[j-1], verbose)
             updateWeights(parcours[j-1])
             updateWeights(current)
-            return 1
+            return updateSwap(node, root, verbose)
     print("pas de swap") if verbose else None
     return 0
 
@@ -169,7 +160,7 @@ def encode(text : str, verbose : bool = False)->bitarray:
         bitarray: le texte compressé en format bitarray\\
     """
     # Arbre vide au départ
-    NYT : Node = Node("#", weight=0)
+    NYT : Node = Node("##", weight=0)
     root : Node = NYT #pointeur sur le haut de l'arbre à chaque fois
     # Résultat
     res : bitarray = bitarray()
@@ -189,11 +180,9 @@ def encode(text : str, verbose : bool = False)->bitarray:
             
         else : #cas où la lettre lue n'est pas encore dans l'arbre 
             print(f"Lettre {lettre} non trouvée") if verbose else None
-            code : bitarray = getCode(root, "#")
+            code : bitarray = getCode(root, "##")
             res = res + code
             res.frombytes(lettre.encode('utf-8')) #ajout de la lettre aux bits
-            # del res[len(res)-8]
-            # print(f"\tres {res}")
             NYT = newNode(NYT, lettre) # insertion de la nouvelle lettre
             update : Node = NYT
             print(f"Ajout de {lettre}") if verbose else None
@@ -203,14 +192,13 @@ def encode(text : str, verbose : bool = False)->bitarray:
         print(f"Update des poids") if verbose else None
         print(root) if verbose else None
         cond = 1
-        while (cond==1): #swap des nodes qui fail le gdbh tant qu'il y en a 
-            cond = updateSwap(update, root, verbose)
+        updateSwap(update, root, verbose)
         # updateWeights(update)
         print(f"--Rendu final près ajout de {lettre} :") if verbose else None
         print(root) if verbose else None
         print("\n"+"="*20) if verbose else None
             
-    # print(root)
+    # Ne pas ajouter de padding ici; on stocke la longueur utile séparément
     return res
 
 def decode(code : bitarray, verbose : bool = False)-> str:
@@ -223,49 +211,47 @@ def decode(code : bitarray, verbose : bool = False)-> str:
     """
     
     # Arbre vide au départ
-    NYT : Node = Node("#", weight=0)
+    NYT : Node = Node("##", weight=0)
     root : Node = NYT #pointeur sur le haut de l'arbre à chaque fois
     # Résultat - les premiers bits correspondent toujours à un symbole
     (res, code) = readUTF8(code) # décode le premier symbole
+    if res == "??" or code is None:
+        return ""
     NYT = newNode(NYT, res) #res contient un seul caractère
     print(root) if verbose else None
-    
-    while (code and len(code)): #on avance en découpant code
-        #recherche du # ou du symbole dans l'arbre
+
+    while (code and len(code)):
+        if code.count(1) == 0:
+            break  # le reste n'est que du padding (zéros)
         avancement : Node = root
-        # Naviguer dans l'arbre jusqu'à atteindre une feuille
         while (not avancement.isLeaf()):
-            if len(code) == 0: #fin de fichier
+            if len(code) == 0:
                 break
             avancement = avance(avancement, code[0])
             code = code[1:]
-        
-        # Vérifier qu'on a bien une feuille
+
         if not avancement.isLeaf():
             break
-            
-        #en sortie : avancement est soit # soit un symbole
+
         if (avancement == NYT):
             print(f"lettre non trouvée {code[:8]}") if verbose else None
-            # decoded : str = code[:8].tobytes().decode('utf-8')
-            decoded : str 
+            decoded : str
             (decoded, code) = readUTF8(code)
+            if decoded == "??" or code is None:
+                break  # Arrêter la boucle si padding ou fin
             NYT = newNode(NYT, decoded)
-            print(f"ajout symbole {decoded}") if verbose or True else None
+            print(f"ajout symbole {decoded}") if verbose else None
             res = res + decoded
-            # code = code[8:]
-        else : #code du symbole
-            print(f"lettre trouvée {avancement}") if verbose or True else None
+        else:
+            print(f"lettre trouvée {avancement}") if verbose else None
             avancement.weight += 1
             res = res + avancement.value
             print(f"increased {avancement.value}") if verbose else None
-            
+
         print(f"{root}\n") if verbose else None
         updateWeights(avancement)
-        cond = 1 
-        while (cond==1):
-            cond = updateSwap(avancement, root)
-    
+        updateSwap(avancement, root)
+
     print(root) if verbose else None
     return res
 
@@ -287,7 +273,7 @@ def readUTF8(bin : bitarray) -> (str, bitarray):
     complet UTF-8 (1 à 4 octets). Le dernier élément est padding si incomplet."""
     
     if len(bin) < 8: #on a pas un bit entier restant
-        return ("?", None)
+        return ("??", None)
 
     # Déterminer la longueur UTF-8 à partir des bits de tête
     # 0xxxxxxx -> 1 octet
@@ -304,7 +290,7 @@ def readUTF8(bin : bitarray) -> (str, bitarray):
         char_bits_len = 32
     else:
         print("Symbole ne respecte pas utf-8")
-        return ("?", None)
+        return ("??", None)
     
     reste : bitarray = bin[char_bits_len:]
     result : str = bin[:char_bits_len].tobytes().decode('utf-8')
