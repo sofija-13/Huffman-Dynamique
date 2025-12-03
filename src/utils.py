@@ -144,6 +144,13 @@ def updateSwap(node : Node, root : Node, verbose : bool = False)->int:
     return 0
 
 def avance(node : Node, bit : int)-> Node:
+    """_Parcourt l'arbre en fonction du bit donné_
+    Args:
+        node (Node): _Node de l'arbre_
+        bit (int): _Bit donnant de sens de parcours_
+    Returns:
+        Node: _Le node après avoir avancé dans la direction de bit à partir de node_
+    """
     if (node == None):
         return None
     elif (bit == 1): # 1
@@ -266,11 +273,12 @@ def lecture(file : str) -> bitarray:
     return bits
 
 def readUTF8(bin : bitarray) -> (str, bitarray):
-    """Découpe un bitarray UTF-8 en plusieurs caractères (bitarrays individuels).
-    Si des bits restants ne forment pas un octet complet, ils sont complétés avec des 0.
-
-    Retourne une liste où chaque élément est un bitarray représentant un caractère
-    complet UTF-8 (1 à 4 octets). Le dernier élément est padding si incomplet."""
+    """_Décode le premier symbole UTF8 à lire dans une chaîne binaire_
+    Args:
+        bin (bitarray): _La chaîne binaire dans laquelle lire le symbole_
+    Returns:
+        (str, bitarray): _Un tuple correspondant au symbole décodé et au reste de la chaîne binaire \ Retourne (??,None) si erreur_
+    """
     
     if len(bin) < 8: #on a pas un bit entier restant
         return ("??", None)
