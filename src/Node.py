@@ -213,19 +213,19 @@ class Node:
         return res
     
     
-    def finBloc(self, m : "Node") -> "Node": 
-        """_Renvoie le dernier node du bloc de m dans le chemin à la racine. 
-            = le dernier node qui a le même poids que m._"""
-        chRacine : List["Node"] = m.cheminRacine()
-        p : Node = m
-        for node in chRacine :
-            if node.weight == m.weight :
-                p = node
+    def finBloc(self, root : "Node") -> "Node": 
+        """_Renvoie le dernier noeu du bloc de m dans le parcours GDBH 
+            => le dernier noeud qui a le même poids que m._"""
+        b : Node = self
+        gdbh : List["Node"] = root.GDBH()
+        
+        for node in gdbh :
+            if node.weight == self.weight :
+                b = node
             else :
                 break
-        if p == m :
-            return None
-        return p
+            
+        return b
 
 
 # =============================================== #
