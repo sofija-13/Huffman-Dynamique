@@ -12,7 +12,7 @@ if [[ ${1:-} == "-h" || ${1:-} == "--help" ]]; then
 fi
 
 if [[ $# -ne 2 ]]; then
-  echo "Erreur: nombre d'arguments invalide." 1>&2
+  echo "Erreur decompresser: nombre d'arguments invalide." 1>&2
   print_usage
   exit 1
 fi
@@ -21,7 +21,7 @@ in_path="$1"
 out_path="$2"
 
 if [[ ! -f "$in_path" ]]; then
-  echo "Erreur: le fichier d'entrée n'existe pas: $in_path" 1>&2
+  echo "Erreur decompresser: le fichier d'entrée n'existe pas: $in_path" 1>&2
   exit 1
 fi
 

@@ -30,16 +30,12 @@ fi
 # lancer le generateur de fichiers 
 
 for (( i=0; i<$1; i++ )); do 
-    # "$PYTHON_BIN" "$SCRIPT_DIR/generate.py" 
-    echo sofija t'as oublié d'écrire le fichier generate.py sale conne
-    exit 1
+    "$PYTHON_BIN" "$SCRIPT_DIR/src/generate.py" "texts/random"$i".txt"
 done
 
-echo Fichiers générés dans "$output_dir"/
-echo Compression...
-
 # lancer compression des fichiers générés
-# for fichier in "$output_dir/random*.txt" ; do 
-#     "$SCRIPT_DIR/compresser" $fichier $($fichier | cut -d "." -f 1).huff
-# done
-
+# echo Compression...
+for fichier in "$output_dir/random*.txt" ; do 
+    # echo $fichier
+    "$SCRIPT_DIR/compresser" $fichier $(echo $fichier | cut -d "." -f 1).huff
+done
