@@ -277,7 +277,7 @@ def readUTF8(bin : bitarray) -> (str, bitarray):
     Args:
         bin (bitarray): _La chaîne binaire dans laquelle lire le symbole_
     Returns:
-        (str, bitarray): _Un tuple correspondant au symbole décodé et au reste de la chaîne binaire \ Retourne (??,None) si erreur_
+        (str, bitarray): _Un tuple correspondant au symbole décodé et au reste de la chaîne binaire  Retourne (??,None) si erreur_
     """
     
     if len(bin) < 8: #on a pas un bit entier restant
