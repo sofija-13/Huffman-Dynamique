@@ -1,7 +1,16 @@
 #! python3
 # genere un fichier random<entier>.txt
 
-import sys, random, string
+import sys
+import random
+import string
+
+def generate_text(length=13000):
+    #definir alphabet qu'on utilise 
+    alphabet = string.printable
+    res : str = ''
+    return res.join(random.choices(alphabet, k=length))
+
 
 def save(text, filename):
     """
@@ -11,7 +20,6 @@ def save(text, filename):
         fichier (str): nom du fichier
         text (str): Texte à écrire
     """
-    # filename : str = "texts/random"+str(n)+".txt"
 
     with open(filename, 'w', encoding='utf-8') as f:
         f.write(text)
@@ -20,11 +28,16 @@ def save(text, filename):
 
 
 def main():
-    if len(sys.argv) < 2:
+    # gerer arguments
+    if len(sys.argv) < 2 or len(sys.argv) > 3: 
         print("Erreur generate: nombre d'arguments invalide.", file=sys.stderr)
         print("Usage: python generate.py <nom_fichier_souhaité>", file=sys.stderr)
         sys.exit(1)
-    text = "texte"
+    text = ""
+    if len(sys.argv) == 3 :
+        text = generate_text(length=sys.argv[2]) 
+    else :
+        text = generate_text()
     filename = sys.argv[1]
     save(text, filename)
 

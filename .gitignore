@@ -5,4 +5,4 @@ __pycache__
 compression.txt 
 decompression.txt
 texts/random*.txt
-texts/random*.huff
+texts/bintexts/random*.huff

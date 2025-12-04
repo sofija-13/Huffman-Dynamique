@@ -23,19 +23,21 @@ fi
 if [[ ${1:-} == "--help" ]]; then
   usage
   echo Ce script crée N fichiers .txt dans le répertoire $output_dir et en génère le texte aléatoirement. 
-  echo N doit être donné en paramètre
+  echo N doit être donné en paramètre.
   exit 1
 fi
 
 # lancer le generateur de fichiers 
 
 for (( i=0; i<$1; i++ )); do 
-    "$PYTHON_BIN" "$SCRIPT_DIR/src/generate.py" "texts/random"$i".txt"
+    "$PYTHON_BIN" "$SCRIPT_DIR/src/generate.py" "texts/random"$i".txt" &
 done
 
 # lancer compression des fichiers générés
-# echo Compression...
-for fichier in "$output_dir/random*.txt" ; do 
-    # echo $fichier
-    "$SCRIPT_DIR/compresser" $fichier $(echo $fichier | cut -d "." -f 1).huff
-done
+# echo Compression des fichiers générés...
+cd $output_dir
+for fichier in $(ls random*.txt) ; do 
+    "$SCRIPT_DIR/compresser" $fichier ./bintexts/$(echo $fichier | cut -d "." -f 1).huff &
+done 
+
+wait # pour des affichages moins moches
