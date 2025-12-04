@@ -32,6 +32,7 @@ fi
 for (( i=0; i<$1; i++ )); do 
     "$PYTHON_BIN" "$SCRIPT_DIR/src/generate.py" "texts/random"$i".txt" &
 done
+wait
 
 # lancer compression des fichiers générés
 # echo Compression des fichiers générés...
@@ -39,5 +40,4 @@ cd $output_dir
 for fichier in $(ls random*.txt) ; do 
     "$SCRIPT_DIR/compresser" $fichier ./bintexts/$(echo $fichier | cut -d "." -f 1).huff &
 done 
-
 wait # pour des affichages moins moches

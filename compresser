@@ -48,6 +48,6 @@ fi
 # Exécuter l'encodeur
 PYTHON_BIN=${PYTHON_BIN:-python3}
 echo Compression $in_path ...
-"$PYTHON_BIN" "$SCRIPT_DIR/encode.py" "$in_path" "$out_path" >> compression.txt
+"$PYTHON_BIN" "$SCRIPT_DIR/encode.py" "$in_path" "$out_path" >> $SCRIPT_DIR/compression.txt
 
 ## MAJ fichier compression.txt dans encode.py 

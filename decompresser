@@ -47,6 +47,6 @@ fi
 
 # Exécuter l'encodeur
 PYTHON_BIN=${PYTHON_BIN:-python3}
-"$PYTHON_BIN" "$SCRIPT_DIR/decode.py" "$in_path" "$out_path" 1>> decompression.txt
+"$PYTHON_BIN" "$SCRIPT_DIR/decode.py" "$in_path" "$out_path" 1>> $SCRIPT_DIR/decompression.txt
 
 ## MAJ fichier decompression.txt dans encode.py 
