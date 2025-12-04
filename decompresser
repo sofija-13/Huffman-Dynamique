@@ -2,8 +2,8 @@
 set -euo pipefail
 
 print_usage() {
-  echo "Usage: decompresser <fichier_entree> <fichier_sortie>" 1>&2
-  echo "Exemple: decompresser texts/bintexts/pascal.huff texts/Blaise_Pascal/Blaise_Pascal.txt" 1>&2
+  echo "Usage: compresser <fichier_entree> <fichier_sortie>" 1>&2
+  echo "Exemple: compresser texts/Blaise_Pascal/Blaise_Pascal.txt texts/bintexts/pascal.huff" 1>&2
 }
 
 if [[ ${1:-} == "-h" || ${1:-} == "--help" ]]; then
@@ -25,6 +25,11 @@ if [[ ! -f "$in_path" ]]; then
   exit 1
 fi
 
+if [[ ! -f "$out_path" ]]; then
+  echo " " >> $out_path
+  echo "Le fichier de sortie n'existait pas, il a été créé : $out_path"
+fi
+
 # Résoudre le répertoire du script pour exécuter encode.py relativement
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -42,4 +47,6 @@ fi
 
 # Exécuter l'encodeur
 PYTHON_BIN=${PYTHON_BIN:-python3}
-"$PYTHON_BIN" "$SCRIPT_DIR/decode.py" "$in_path" "$out_path"
+"$PYTHON_BIN" "$SCRIPT_DIR/decode.py" "$in_path" "$out_path" 1>> decompression.txt
+
+## MAJ fichier decompression.txt dans encode.py 
