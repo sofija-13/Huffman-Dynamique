@@ -3,9 +3,7 @@
 import sys, os, time
 from src.utils import encode, writeBin
 
-def infos_compression(txt_rel, bin_rel, temps):
-    txt_path = os.path.join("..", *txt_rel.split("/"))
-    bin_path = os.path.join("..", *bin_rel.split("/"))
+def infos_compression(txt_path, bin_path, temps):
     txt_size = os.path.getsize(txt_path) if os.path.exists(txt_path) else 0
     bin_size = os.path.getsize(bin_path) if os.path.exists(bin_path) else 0
     taux_comp = bin_size / txt_size
@@ -25,8 +23,9 @@ def main():
         contenu = f.read()
 
     temps_debut = time.time()
-    writeBin(encode(contenu), sys.argv[2])
+    encoded = encode(contenu)
     temps_fin = time.time()
+    writeBin(encoded, sys.argv[2])
     print(f"Fichier encodé avec succès: {sys.argv[1]} -> {sys.argv[2]}", file=sys.stderr)
     infos_compression(sys.argv[1], sys.argv[2], temps_fin-temps_debut)
 
