@@ -9,7 +9,8 @@ def infos_compression(txt_path, bin_path, temps):
     taux_comp = bin_size / txt_size
     #taux = 1 - ratio
     #facteur = txt_size / bin_size
-    print(f"{txt_path};{bin_path};{txt_size};{bin_size};{taux_comp:.5%};{temps}")
+    print(f"{txt_path};{bin_path};{txt_size};{bin_size};{taux_comp:.5f};{temps}")
+    #5 chiffres après la virgule
 
 def main():
     if len(sys.argv) != 3:
@@ -27,7 +28,8 @@ def main():
     temps_fin = time.time()
     writeBin(encoded, sys.argv[2])
     print(f"Fichier encodé avec succès: {sys.argv[1]} -> {sys.argv[2]}", file=sys.stderr)
-    infos_compression(sys.argv[1], sys.argv[2], temps_fin-temps_debut)
+    infos_compression(sys.argv[1], sys.argv[2], (temps_fin-temps_debut)*1000)
+    # temps en millisecondes
 
 if __name__ == "__main__":
     main()

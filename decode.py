@@ -8,7 +8,7 @@ def infos_decompression(txt_path, bin_path, temps):
     taux_comp = bin_size / txt_size
     #taux = 1 - ratio
     #facteur = txt_size / bin_size
-    print(f"{bin_path};{txt_path};{txt_size};{bin_size};{taux_comp:.5%};{temps}")
+    print(f"{bin_path};{txt_path};{txt_size};{bin_size};{taux_comp:.5f};{temps}")
 
 
 def main():
@@ -27,7 +27,7 @@ def main():
     writeStr(sys.argv[2], decoded)
     
     print(f"Fichier décodé avec succès: {sys.argv[1]} -> {sys.argv[2]}", file=sys.stderr)
-    infos_decompression(sys.argv[1], sys.argv[2], temps_fin-temps_debut)
+    infos_decompression(sys.argv[1], sys.argv[2], (temps_fin-temps_debut)*1000)
 
 if __name__ == "__main__":
     main()
