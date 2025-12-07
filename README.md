@@ -11,9 +11,9 @@ Langage utilisé : **Python 3** - Version 1.14, dernière version  (Octobre 2025
 python3 -m venv .venv
 source .venv/bin/activate 
 ```
-#### Installation du module *bitarray*
+#### Installation des modules nécessaires : *bitarray*, *pandas*, *matplotlib*, *numpy*
 ```bash
-pip3 install bitarray
+pip3 install bitarray pandas matplotlib numpy
 ```
 ---
 
