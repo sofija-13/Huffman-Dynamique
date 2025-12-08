@@ -214,10 +214,10 @@ class Node:
     
     
     def finBloc(self, root : "Node") -> "Node": 
-        """_Renvoie le dernier noeu du bloc de m dans le parcours GDBH 
-            => le dernier noeud qui a le même poids que m._"""
+        """_Renvoie le dernier noeud du bloc de self dans le parcours GDBH 
+            => le dernier noeud qui a le même poids que self._"""
         b : Node = self
-        gdbh : List["Node"] = root.GDBH()
+        gdbh : List["Node"] = self.GDBH(root)
         
         for node in gdbh :
             if node.weight == self.weight :
