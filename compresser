@@ -26,7 +26,7 @@ if [[ ! -f "$in_path" ]]; then
 fi
 
 if [[ ! -f "$out_path" ]]; then
-  echo " " >> $out_path
+  echo -n > $out_path
   echo "Le fichier de sortie n'existait pas, il a été créé : $out_path"
 fi
 
