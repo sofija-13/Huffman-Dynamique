@@ -19,6 +19,7 @@ pip3 install bitarray pandas matplotlib numpy
 
 [Lien Rapport Overleaf](https://www.overleaf.com/7683873468ggjjjbbtmqwg#1bff2f) (actuellement en modification)
 
+[Lien Diapo Canva](https://www.canva.com/design/DAG68VOx-co/xnu7T3NC2ZLkr3Se8pxgeg/edit?utm_content=DAG68VOx-co&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 ---
 
 TO DO:
