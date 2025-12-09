@@ -19,8 +19,8 @@ echo ""
 
 # Générer des fichiers avec différents nombres de symboles
 
-# De 50 en 50 jusqu'à 1000
-for nb_symboles in $(seq 50 50 1000); do
+# De 50 en 50 jusqu'à 3000
+for nb_symboles in $(seq 50 50 3000); do
   filename="$OUTPUT_DIR/sym_${nb_symboles}.txt"
   echo "Génération: $filename ($nb_symboles symboles différents)"
   python3 "generer_fichier_utf8.py" \
@@ -30,16 +30,6 @@ for nb_symboles in $(seq 50 50 1000); do
   echo ""
 done
 
-# De 500 en 500 au-dessus de 1000 jusqu'à 3000
-for nb_symboles in $(seq 1500 500 3000); do
-  filename="$OUTPUT_DIR/sym_${nb_symboles}.txt"
-  echo "Génération: $filename ($nb_symboles symboles différents)"
-  python3 "generer_fichier_utf8.py" \
-    -t "$TAILLE_FIXE" \
-    -s "$nb_symboles" \
-    -o "$filename"
-  echo ""
-done
 
 echo "=== Compression des fichiers générés ==="
 echo ""
