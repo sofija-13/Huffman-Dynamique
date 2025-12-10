@@ -207,3 +207,15 @@ texts/analyse/symboles/sym_800.txt;texts/bintexts/sym_800.huff;10001;6631;0.6630
 texts/analyse/symboles/sym_850.txt;texts/bintexts/sym_850.huff;10002;6835;0.68336;1919.551134109497
 texts/analyse/symboles/sym_900.txt;texts/bintexts/sym_900.huff;10000;6979;0.69790;2032.7351093292236
 texts/analyse/symboles/sym_950.txt;texts/bintexts/sym_950.huff;10000;7130;0.71300;2048.693895339966
+random9.txt;./bintexts/random9.huff;34025;17388;0.51104;169623.88515472412
+random3.txt;./bintexts/random3.huff;33989;17392;0.51169;170363.34609985352
+random0.txt;./bintexts/random0.huff;34048;17395;0.51090;170685.09888648987
+random6.txt;./bintexts/random6.huff;33987;17383;0.51146;170639.0221118927
+random1.txt;./bintexts/random1.huff;33891;17377;0.51273;171593.77598762512
+random7.txt;./bintexts/random7.huff;33869;17383;0.51324;171667.0081615448
+random8.txt;./bintexts/random8.huff;33962;17405;0.51248;171983.80398750305
+random4.txt;./bintexts/random4.huff;33937;17385;0.51227;172233.32500457764
+random5.txt;./bintexts/random5.huff;33950;17407;0.51272;172366.92309379578
+random2.txt;./bintexts/random2.huff;33937;17391;0.51245;172597.4042415619
+../tests/very_low_entropy.txt;../texts/bintexts/very_low_entropy.huff;10000;1251;0.12510;107.32793807983398
+../tests/very_high_entropy.txt;../texts/bintexts/very_high_entropy.huff;10000;8435;0.84350;2202.219009399414
