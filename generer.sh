@@ -6,8 +6,8 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PYTHON_BIN=${PYTHON_BIN:-python3}
 
-output_dir="$SCRIPT_DIR/texts"
-compressed_dir="$SCRIPT_DIR/texts/bintexts"
+output_dir="$SCRIPT_DIR/texts/random"
+compressed_dir="$SCRIPT_DIR/texts/random/bintexts"
 
 usage() {
   echo "Usage: ./generer.sh <nombre_fichiers> <base_nom> [taille] [distribution]" 1>&2
