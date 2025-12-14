@@ -4,5 +4,5 @@ __pycache__
 .DS_Store
 # compression.txt 
 # decompression.txt
-texts/bintexts/random/bintexts/*.huff
+texts/random/bintexts/*.huff
 # tests/*.png

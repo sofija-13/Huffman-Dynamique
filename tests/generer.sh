@@ -5,9 +5,10 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PYTHON_BIN=${PYTHON_BIN:-python3}
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")" #Huffman-Dynamique
 
-output_dir="$SCRIPT_DIR/texts/random"
-compressed_dir="$SCRIPT_DIR/texts/random/bintexts"
+output_dir=$PROJECT_DIR"/texts/random"
+compressed_dir=$PROJECT_DIR"/texts/random/bintexts"
 
 usage() {
   echo "Usage: ./generer.sh <nombre_fichiers> <base_nom> [taille] [distribution]" 1>&2
@@ -75,7 +76,7 @@ for (( i=0; i<$num_files; i++ )); do
     filename="$output_dir/${base_name}${i}.txt"
     
     # Construire la commande avec arguments optionnels
-    cmd=("$PYTHON_BIN" "$SCRIPT_DIR/src/generate.py" "$filename")
+    cmd=("$PYTHON_BIN" "$PROJECT_DIR/src/generate.py" "$filename")
     [[ -n $file_size ]] && cmd+=("$file_size")
     [[ -n $distribution ]] && cmd+=("$distribution")
     
@@ -88,7 +89,7 @@ echo "$num_files fichiers générés dans $output_dir"
 echo
 
 # Lancer compression des fichiers générés
-if [[ -x "$SCRIPT_DIR/compresser" ]]; then
+if [[ -x $PROJECT_DIR"/compresser" ]]; then
     echo "========================"
     echo "COMPRESSION DES FICHIERS"
     echo "========================"
@@ -98,12 +99,10 @@ if [[ -x "$SCRIPT_DIR/compresser" ]]; then
     for fichier in "${base_name}"*.txt; do
         if [[ -f $fichier ]]; then
             output_name="./bintexts/$(basename "$fichier" .txt).huff"
-            "$SCRIPT_DIR/compresser" "$fichier" "$output_name" &
+            $PROJECT_DIR/compresser "$fichier" "$output_name" 
         fi
     done
-    
-    wait  # Attendre que toutes les compressions se terminent
-        
+            
     echo
     echo "Tous les fichiers ont été compressés dans $compressed_dir"
 else
