@@ -7,8 +7,6 @@ def infos_compression(txt_path, bin_path, temps):
     txt_size = os.path.getsize(txt_path) if os.path.exists(txt_path) else 0
     bin_size = os.path.getsize(bin_path) if os.path.exists(bin_path) else 0
     taux_comp = bin_size / txt_size
-    #taux = 1 - ratio
-    #facteur = txt_size / bin_size
     print(f"{txt_path};{bin_path};{txt_size};{bin_size};{taux_comp:.5f};{temps}")
     #5 chiffres après la virgule
 

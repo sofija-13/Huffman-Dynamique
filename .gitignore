@@ -2,7 +2,6 @@
 __pycache__
 .vscode
 .DS_Store
-# compression.txt 
-# decompression.txt
+compression.txt 
+decompression.txt
 texts/random/bintexts/*.huff
-# tests/*.png
